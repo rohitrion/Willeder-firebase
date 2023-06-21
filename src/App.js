@@ -9,33 +9,36 @@ import { auth } from './Component/firebase';
 import Reset from './Component/Reset';
 
 function App() {
-
-  const [username, setusername] = useState() //display name
-  const [log, setlog] = useState()            //login user
+  const [username, setUsername] = useState(''); // Display name
+  const [log, setLog] = useState(false); // Indicates if user is logged in
   const navigate = useNavigate();
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        setusername(user.displayName)
-        navigate('/data')
-        setlog(user)
+        setUsername(user.displayName);
+        setLog(true);
       } else {
-        setusername('')
+        setUsername('');
+        setLog(false);
+        navigate('/');
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div className='app'>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/data" element={<Home name={username} log={log} />} />
-        <Route path="/register" element={<Signup />} />
-        <Route path="/reset" element={<Reset />} />
+        <Route path='/' element={<Login />} />
+       <Route path='/data' element={log ? <Home name={username} log={log} /> : <Login />} />
+        <Route path='/register' element={<Signup />} />
+        <Route path='/reset' element={<Reset />} />
       </Routes>
-
     </div>
   );
 }
 
 export default App;
+
+
+

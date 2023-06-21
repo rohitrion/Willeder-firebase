@@ -1,84 +1,199 @@
+
+
+import React, { useState, useEffect } from 'react';
 import {
-    MDBCard,
-    MDBCardImage,
-    MDBCardBody,
-    MDBCardTitle,
-    MDBCardText,
+  MDBCard,
+  MDBCardImage,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
 } from 'mdb-react-ui-kit';
 
-import { useState, useEffect } from 'react';
-
 function Cards() {
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const [data, setdata] = useState([]);
-    const [page, setpage] = useState(1);
+  const api = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.instantwebtools.net/v1/passenger?page=${page}&size=10`
+      );
+      if (response.ok) {
+        const jsonData = await response.json();
+        setData((prevData) => [...prevData, ...jsonData.data]);
+      } else {
+        console.error('Error retrieving data from the API.');
+      }
+    } catch (error) {
+      console.error('Error occurred during API fetch:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const api = async () => {
-        const info = await fetch(
-            `https://api.instantwebtools.net/v1/passenger?page=${page}&size=10`
-        );
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
-        const data = await info.json();
+  useEffect(() => {
+    api();
+  }, [page]);
 
-        setdata((prev) => [...prev, ...data.data]);
-    };
-    console.log(data)
-    console.log("euiriurh", data.data)
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    const handlescroll = () => {
-        if (
-            window.innerHeight + document.documentElement.scrollTop + 1 >=
-            document.documentElement.scrollHeight
-        ) {
-            setpage((prev) => prev + 1);
-        }
-    };
+  const handleImageError = (e) => {
+    e.target.onerror = null;
+    e.target.src = ''; // Provide the path to the fallback logo image
+  };
 
-    useEffect(() => {
-        api();
-    }, [page]);
-
-    useEffect(() => {
-        window.addEventListener("scroll", handlescroll);
-
-        return () => window.removeEventListener("scroll", handlescroll);
-    }, []);
-
-
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = ''; // Provide the path to the fallback logo image
-    };
-    return (
-        <>
-            <div className='card-container'>
-                {
-                    data && data.map((item, index) => (
-                        <div className='card' key={`${item._id}-${index}`}>
-                            <MDBCard>
-                                <MDBCardImage position='top' src={item.airline[0]?.logo}
-                                    alt='Airline Logo'
-                                    onError={handleImageError} />
-                                <MDBCardBody>
-                                    <MDBCardTitle><b>{item.name}</b></MDBCardTitle>
-                                    <MDBCardText>
-                                        <div>
-                                            <b>trips:{item.trips} {''} Id:{index} </b>
-                                            <p>Airline: {item.airline[0]?.name}</p>
-                                            <p>Country: {item.airline[0]?.country}</p>
-                                            <p>Established: {item.airline[0]?.established}</p>
-                                        </div>
-                                    </MDBCardText>
-                                </MDBCardBody>
-                            </MDBCard>
-                        </div>
-                    ))
-                }
-            </div>
-        </>
-
-    );
+  return (
+    <div className='card-container'>
+      {data.map((item,index) => (
+        <div className='card'  key={`${item._id}-${index}`}>
+          <MDBCard>
+            <MDBCardImage
+              position='top'
+              src={item.airline[0]?.logo}
+              alt='Airline Logo'
+              onError={handleImageError}
+            />
+            <MDBCardBody>
+              <MDBCardTitle>
+                <b>{item.name}</b>
+              </MDBCardTitle>
+              <MDBCardText>
+                <div>
+                  <b>Trips: {item.trips}</b>
+                  <p>Airline: {item.airline[0]?.name}</p>
+                  <p>Country: {item.airline[0]?.country}</p>
+                  <p>Established: {item.airline[0]?.established}</p>
+                </div>
+              </MDBCardText>
+            </MDBCardBody>
+          </MDBCard>
+        </div>
+      ))}
+      {isLoading && <p>Loading...</p>}
+    </div>
+  );
 }
 
-export default Cards
+export default Cards;
+
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   MDBCard,
+//   MDBCardImage,
+//   MDBCardBody,
+//   MDBCardTitle,
+//   MDBCardText,
+// } from 'mdb-react-ui-kit';
+
+// function Cards() {
+//   const [data, setData] = useState([]);
+//   const [page, setPage] = useState(1);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [hasError, setHasError] = useState(false);
+
+//   const fetchApiData = async () => {
+//     if (isLoading) return; // Prevent multiple API calls when already loading
+//     setIsLoading(true);
+//     try {
+//       const response = await fetch(
+//         `https://api.instantwebtools.net/v1/passenger?page=${page}&size=10`
+//       );
+//       if (response.ok) {
+//         const jsonData = await response.json();
+//         setData((prevData) => [...prevData, ...jsonData.data]);
+//       } else {
+//         setHasError(true);
+//         console.error('Error retrieving data from the API.');
+//       }
+//     } catch (error) {
+//       setHasError(true);
+//       console.error('Error occurred during API fetch:', error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleScroll = () => {
+//     const scrollThreshold = 200; // Adjust this value as needed
+//     const scrolledToBottom =
+//       window.innerHeight + window.pageYOffset >=
+//       document.documentElement.scrollHeight - scrollThreshold;
+
+//     if (scrolledToBottom) {
+//       setPage((prevPage) => prevPage + 1);
+//     }
+//   };
+
+//   const debounce = (func, delay) => {
+//     let timer;
+//     return function () {
+//       clearTimeout(timer);
+//       timer = setTimeout(func, delay);
+//     };
+//   };
+
+//   useEffect(() => {
+//     fetchApiData();
+//   }, [page]);
+
+//   useEffect(() => {
+//     const debouncedScroll = debounce(handleScroll, 100); // Adjust debounce delay as needed
+//     window.addEventListener('scroll', debouncedScroll);
+//     return () => window.removeEventListener('scroll', debouncedScroll);
+//   }, []);
+
+//   const handleImageError = (e) => {
+//     e.target.onerror = null;
+//     e.target.src = ''; // Provide the path to the fallback logo image
+//   };
+
+//   return (
+//     <div className='card-container'>
+//       {data.map((item, index) => (
+//         <div className='card' key={`${item._id}-${index}`}>
+//           <MDBCard>
+//             <MDBCardImage
+//               position='top'
+//               src={item.airline[0]?.logo}
+//               alt='Airline Logo'
+//               onError={handleImageError}
+//             />
+//             <MDBCardBody>
+//               <MDBCardTitle>
+//                 <b>{item.name}</b>
+//               </MDBCardTitle>
+//               <MDBCardText>
+//                 <div>
+//                   <b>Trips: {item.trips}</b>
+//                   <p>Airline: {item.airline[0]?.name}</p>
+//                   <p>Country: {item.airline[0]?.country}</p>
+//                   <p>Established: {item.airline[0]?.established}</p>
+//                 </div>
+//               </MDBCardText>
+//             </MDBCardBody>
+//           </MDBCard>
+//         </div>
+//       ))}
+//       {isLoading && <p>Loading...</p>}
+//       {hasError && <p>Error occurred while fetching data.</p>}
+//     </div>
+//   );
+// }
+
+// export default Cards;
 

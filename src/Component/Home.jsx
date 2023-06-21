@@ -19,31 +19,33 @@ function Home({ name, log }) {
       console.log("Signed out successfully")
     }).catch((error) => {
     });
-    
+
   }
+
+  if (!log) {
+    navigate('/');
+    return null;
+  }
+
   return (
     <>
-      {log ? (
-        <div>
-          <MDBNavbar light bgColor='light'>
-            <MDBContainer fluid>
-              <MDBNavbarBrand href='#' className='ms-5'>
-               (●'◡'●) Home
-              </MDBNavbarBrand>
-              <MDBNavbarBrand href='#'>Welcome {" "} {name}🙎</MDBNavbarBrand>
-              <MDBNavbarBrand href='#' className='me-5' onClick={handleLogout}>
-                Signout🛑
-              </MDBNavbarBrand>
-            </MDBContainer>
-          </MDBNavbar>
-          <br />
-          <div className='card-container'>
-            <Cards />
-          </div>
-        </div>
-      ) : (
-        navigate("/")
-      )}
+     <div>
+      <MDBNavbar light bgColor='light'>
+        <MDBContainer fluid>
+          <MDBNavbarBrand href='#' className='ms-5'>
+            (●'◡'●) Home
+          </MDBNavbarBrand>
+          <MDBNavbarBrand href='#'>Welcome {name}🙎</MDBNavbarBrand>
+          <MDBNavbarBrand href='#' className='me-5' onClick={handleLogout}>
+            Signout🛑
+          </MDBNavbarBrand>
+        </MDBContainer>
+      </MDBNavbar>
+      <br />
+      <div >
+        <Cards />
+      </div>
+    </div>
     </>
   );
 }
@@ -51,3 +53,4 @@ function Home({ name, log }) {
 export default Home
 
 
+//className='card-container'

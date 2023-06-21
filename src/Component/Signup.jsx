@@ -8,7 +8,7 @@ import {
     MDBCard,
     MDBCardBody,
     MDBInput,
-    
+
 } from 'mdb-react-ui-kit';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from './firebase';
@@ -34,10 +34,10 @@ function Signup() {
         seterror('');
         setsubmitdisable(true);
         createUserWithEmailAndPassword(auth, values.email, values.pass)
-            .then(async (res) => {
+            .then((res) => {
                 setsubmitdisable(false);
                 const user = res.user;
-                await updateProfile(user, {
+                 updateProfile(user, {
                     displayName: values.name
                 });
                 console.log(res)

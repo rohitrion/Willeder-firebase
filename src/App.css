@@ -19,23 +19,10 @@
   align-items: center;
   height: 200px;
   width: 200px;
-  /* flex: 0 0 15%;  */
-
-  /* Adjust the width as needed */
 
 }
 
-.hhh{
+.hhh {
   height: 500px;
   width: 500px;
 }
-
-/* .cen{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 20px;
-  background-color: antiquewhite;
-} */
